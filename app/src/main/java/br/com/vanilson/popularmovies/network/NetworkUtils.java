@@ -1,12 +1,8 @@
 package br.com.vanilson.popularmovies.network;
 
-import android.net.Uri;
-import android.util.Log;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
@@ -15,7 +11,11 @@ import java.util.Scanner;
  */
 public final class NetworkUtils {
 
-    private static final String format = "json";
+    public static final String MOVIES_URL = "http://api.themoviedb.org/3/movie/";
+    public static final String API_KEY = "";
+    public static final String IMG_URL = "http://image.tmdb.org/t/p/w342/";
+    public static final String IMG_POSTER_URL = "http://image.tmdb.org/t/p/w780/";
+
 
     public static String requestHttpUrl(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();

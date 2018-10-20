@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -22,10 +21,11 @@ import br.com.vanilson.popularmovies.model.Movie;
 import br.com.vanilson.popularmovies.network.NetworkUtils;
 import br.com.vanilson.popularmovies.utils.MoviesAdapter;
 
+import static br.com.vanilson.popularmovies.network.NetworkUtils.API_KEY;
+import static br.com.vanilson.popularmovies.network.NetworkUtils.MOVIES_URL;
+
 public class MainActivity extends AppCompatActivity {
 
-    private static final String MOVIES_URL = "http://api.themoviedb.org/3/movie/";
-    private static final String API_KEY = "";
     private static final int NUMBER_OF_COLUMNS = 2;
     private static final String POPULAR_SORTING = "popular";
 

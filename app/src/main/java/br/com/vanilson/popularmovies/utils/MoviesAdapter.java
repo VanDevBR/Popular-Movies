@@ -1,24 +1,23 @@
 package br.com.vanilson.popularmovies.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
-
 import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
+import br.com.vanilson.popularmovies.MovieDetail;
 import br.com.vanilson.popularmovies.R;
 import br.com.vanilson.popularmovies.model.Movie;
 
-public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdapterViewHolder> {
+import static br.com.vanilson.popularmovies.network.NetworkUtils.IMG_URL;
 
-    private static final String IMG_URL = "http://image.tmdb.org/t/p/w342/";
+public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdapterViewHolder> {
 
     List<Movie> movies;
     Context mContext;
@@ -34,7 +33,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
     @Override
     public void onBindViewHolder(@NonNull MoviesAdapterViewHolder holder, int position) {
         Picasso.with(mContext).load(IMG_URL + movies.get(position).getPosterPath()).into(holder.mMovieImageView);
-//        holder.mMovieTextView.setText(movies.get(position).getTitle());
     }
 
     @Override
@@ -48,26 +46,26 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
         notifyDataSetChanged();
     }
 
-
     public class MoviesAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final ImageView mMovieImageView;
-//        public final TextView mMovieTextView;
-
 
         public MoviesAdapterViewHolder(View view) {
             super(view);
             mMovieImageView = view.findViewById(R.id.iv_movie_item);
-//            mMovieTextView = view.findViewById(R.id.tv_movie_item);
-//            view.setOnClickListener(this);
+            view.setOnClickListener(this);
         }
 
-        /**
-         * This gets called by the child views during a click.
-         *
-         * @param v The View that was clicked
-         */
         @Override
         public void onClick(View v) {
+            try{
+                Movie movie = movies.get(getAdapterPosition());
+                Intent intent = new Intent(mContext, MovieDetail.class);
+                intent.putExtra("movie", movie);
+                mContext.startActivity(intent);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
 
         }
     }
