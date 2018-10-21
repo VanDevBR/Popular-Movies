@@ -6,4 +6,6 @@
     <string name="release_date_date_label">Release Date:</string>
     <string name="synopsisLabel">Synopsis:</string>
     <string name="ratingLabel">Rating:</string>
+    <string name="top_rated">Top Rated</string>
+    <string name="popular">Popular</string>
 </resources>

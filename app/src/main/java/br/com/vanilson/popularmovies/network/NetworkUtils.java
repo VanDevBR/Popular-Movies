@@ -13,8 +13,8 @@ public final class NetworkUtils {
 
     public static final String MOVIES_URL = "http://api.themoviedb.org/3/movie/";
     public static final String API_KEY = "";
-    public static final String IMG_URL = "http://image.tmdb.org/t/p/w342/";
-    public static final String IMG_POSTER_URL = "http://image.tmdb.org/t/p/w780/";
+    public static final String IMG_URL = "http://image.tmdb.org/t/p/w500/";
+    public static final String IMG_POSTER_URL = "http://image.tmdb.org/t/p/w1280/";
 
 
     public static String requestHttpUrl(URL url) throws IOException {

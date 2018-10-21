@@ -1,10 +1,14 @@
 package br.com.vanilson.popularmovies;
 
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -28,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int NUMBER_OF_COLUMNS = 2;
     private static final String POPULAR_SORTING = "popular";
+    private static final String TOPRATED_SORTING = "top_rated";
 
     private RecyclerView mRecyclerView;
     private MoviesAdapter mMoviesAdapter;
@@ -44,23 +49,25 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.movies_recyclerview);
         mErrorMessageDisplay = findViewById(R.id.tv_error_message_display);
         mLoadingIndicator = findViewById(R.id.pb_loading_indicator);
-
-        GridLayoutManager layoutManager = new GridLayoutManager(this, NUMBER_OF_COLUMNS);
-//        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setHasFixedSize(true);
-
         mMoviesAdapter = new MoviesAdapter();
 
+        GridLayoutManager layoutManager = new GridLayoutManager(this, NUMBER_OF_COLUMNS);
+
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mMoviesAdapter);
 
-        loadMovies();
+        if(savedInstanceState != null){
+            mMoviesAdapter.setMovies(savedInstanceState.<Movie>getParcelableArrayList("movies"));
+        } else {
+            loadMovies(POPULAR_SORTING);
+        }
+
 
     }
 
-    private void loadMovies(){
-        //TODO - sorting
-        new MoviesNetworkTask().execute();
+    private void loadMovies(String sortMode){
+        new MoviesNetworkTask().execute(sortMode);
     }
 
     private void showErrorMessage() {
@@ -73,6 +80,41 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.sort_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.miTopRated) {
+            mMoviesAdapter.setMovies(null);
+            loadMovies(TOPRATED_SORTING);
+            return true;
+        }
+
+        if(id == R.id.miPopular){
+            mMoviesAdapter.setMovies(null);
+            loadMovies(POPULAR_SORTING);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+        List<Movie> movies = mMoviesAdapter.getMovies();
+
+        outState.putParcelableArray("movies", movies.toArray( new Parcelable[movies.size()] ) );
+
+        super.onSaveInstanceState(outState);
+    }
 
     public class MoviesNetworkTask extends AsyncTask<String, Void, List<Movie>> {
 
@@ -83,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
             try {
 
-                JSONObject responseObj = null;
+                JSONObject responseObj;
                 String sortMode = POPULAR_SORTING;
 
                 if(params.length > 0){
