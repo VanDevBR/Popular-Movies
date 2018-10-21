@@ -6,9 +6,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
-/**
- * These utilities will be used to communicate with the weather servers.
- */
 public final class NetworkUtils {
 
     public static final String MOVIES_URL = "http://api.themoviedb.org/3/movie/";
