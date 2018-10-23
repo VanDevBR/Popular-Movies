@@ -1,5 +1,8 @@
 package br.com.vanilson.popularmovies;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -63,11 +67,15 @@ public class MainActivity extends AppCompatActivity {
             loadMovies(POPULAR_SORTING);
         }
 
-
     }
 
     private void loadMovies(String sortMode){
-        new MoviesNetworkTask().execute(sortMode);
+        if(isNetworkAvailable()){
+            new MoviesNetworkTask().execute(sortMode);
+        } else{
+            Toast.makeText(this, R.string.offline_toast, Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void showErrorMessage() {
@@ -78,6 +86,13 @@ public class MainActivity extends AppCompatActivity {
     private void showDataView() {
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
         mRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    private Boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
 
     @Override
@@ -135,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                 URL moviesURL = new URL(MOVIES_URL + sortMode + "?api_key=" + API_KEY);
                 String resp = NetworkUtils.requestHttpUrl(moviesURL);
 
-                if(resp.isEmpty()){
+                if(resp != null && resp.isEmpty()){
                     return null;
                 }
 

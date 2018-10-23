@@ -8,4 +8,5 @@
     <string name="ratingLabel">Rating:</string>
     <string name="top_rated">Top Rated</string>
     <string name="popular">Popular</string>
+    <string name="offline_toast">Offline, Check your internet connection!</string>
 </resources>

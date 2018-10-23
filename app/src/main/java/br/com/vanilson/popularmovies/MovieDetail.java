@@ -3,9 +3,6 @@ package br.com.vanilson.popularmovies;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,7 +20,6 @@ public class MovieDetail extends AppCompatActivity {
     private TextView tvDate;
     private ImageView ivPoster;
     private Movie movie;
-    private Button btBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,14 +32,6 @@ public class MovieDetail extends AppCompatActivity {
         tvSynopsis = findViewById(R.id.tv_movie_synopsis);
         tvDate = findViewById(R.id.tv_movie_date);
         ivPoster = findViewById(R.id.iv_movie_poster);
-        btBack = findViewById(R.id.bt_back);
-
-        btBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                btBackClick();
-            }
-        });
 
         Intent selfIntent = getIntent();
 
@@ -61,16 +49,4 @@ public class MovieDetail extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
-            onBackPressed();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void btBackClick(){
-        onBackPressed();
-    }
 }
