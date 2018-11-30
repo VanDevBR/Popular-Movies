@@ -1,8 +1,10 @@
 package br.com.vanilson.popularmovies;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
@@ -17,14 +19,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.stetho.Stetho;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONObject;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.vanilson.popularmovies.data.MovieContract;
 import br.com.vanilson.popularmovies.model.Movie;
 import br.com.vanilson.popularmovies.network.NetworkUtils;
 import br.com.vanilson.popularmovies.utils.MoviesAdapter;
@@ -48,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Stetho.initializeWithDefaults(this);
+
         setContentView(R.layout.activity_main);
 
         mRecyclerView = findViewById(R.id.movies_recyclerview);
@@ -61,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mMoviesAdapter);
 
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             mMoviesAdapter.setMovies(savedInstanceState.<Movie>getParcelableArrayList("movies"));
         } else {
             loadMovies(POPULAR_SORTING);
@@ -69,13 +77,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void loadMovies(String sortMode){
-        if(isNetworkAvailable()){
+    private void loadMovies(String sortMode) {
+        if (isNetworkAvailable()) {
             new MoviesNetworkTask().execute(sortMode);
-        } else{
+        } else {
             Toast.makeText(this, R.string.offline_toast, Toast.LENGTH_SHORT).show();
         }
-
     }
 
     private void showErrorMessage() {
@@ -112,9 +119,15 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
-        if(id == R.id.miPopular){
+        if (id == R.id.miPopular) {
             mMoviesAdapter.setMovies(null);
             loadMovies(POPULAR_SORTING);
+            return true;
+        }
+
+        if (id == R.id.miFavorites) {
+            mMoviesAdapter.setMovies(null);
+            new FavoriteMoviesTask().execute();
             return true;
         }
 
@@ -126,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
 
         List<Movie> movies = mMoviesAdapter.getMovies();
 
-        outState.putParcelableArray("movies", movies.toArray( new Parcelable[movies.size()] ) );
+        outState.putParcelableArray("movies", movies.toArray(new Parcelable[movies.size()]));
 
         super.onSaveInstanceState(outState);
     }
@@ -143,22 +156,23 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject responseObj;
                 String sortMode = POPULAR_SORTING;
 
-                if(params.length > 0){
+                if (params.length > 0) {
                     sortMode = params[0];
                 }
 
                 URL moviesURL = new URL(MOVIES_URL + sortMode + "?api_key=" + API_KEY);
                 String resp = NetworkUtils.requestHttpUrl(moviesURL);
 
-                if(resp != null && resp.isEmpty()){
+                if (resp != null && resp.isEmpty()) {
                     return null;
                 }
 
                 responseObj = new JSONObject(resp);
-                if(responseObj.has("results")){
+                if (responseObj.has("results")) {
 
                     String results = responseObj.getJSONArray("results").toString();
-                    movies.addAll((List<Movie>) new Gson().fromJson(results, new TypeToken<List<Movie>>(){}.getType()));
+                    movies.addAll((List<Movie>) new Gson().fromJson(results, new TypeToken<List<Movie>>() {
+                    }.getType()));
 
                 }
 
@@ -179,9 +193,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<Movie> o) {
             super.onPostExecute(o);
-            if(o.isEmpty()){
+            if (o.isEmpty()) {
                 showErrorMessage();
-            }else{
+            } else {
                 mMoviesAdapter.setMovies(o);
                 showDataView();
             }
@@ -190,6 +204,66 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    public class FavoriteMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
+
+        @Override
+        protected List<Movie> doInBackground(Void... voids) {
+
+            List<Movie> movies = new ArrayList<>();
+
+            try {
+
+                Uri uri = MovieContract.MovieEntry.CONTENT_URI;
+                Cursor cursor = getContentResolver().query(
+                        uri,
+                        null,
+                        null,
+                        null,
+                        null);
+                if (cursor != null && cursor.getCount() > 0) {
+                    while (cursor.moveToNext()){
+                        Movie movie = new Movie();
+                        movie.setId(cursor.getLong(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_ID)));
+                        movie.setTitle(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE)));
+                        movie.setVoteAverage(cursor.getDouble(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_AVERAGE)));
+                        movie.setOverview(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_OVERVIEW)));
+                        movie.setReleaseDate(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATE)));
+                        movie.setBackdropPath(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH)));
+                        movie.setPosterPath(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_PATH)));
+                        movies.add(movie);
+                    }
+                }
+
+                cursor.close();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return movies;
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mLoadingIndicator.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(List<Movie> o) {
+            super.onPostExecute(o);
+            if (o.isEmpty()) {
+                showErrorMessage();
+            } else {
+                mMoviesAdapter.setMovies(o);
+                showDataView();
+            }
+
+            mLoadingIndicator.setVisibility(View.INVISIBLE);
+        }
+    }
 
 
 }

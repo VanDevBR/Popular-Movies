@@ -8,5 +8,8 @@
     <string name="ratingLabel">Rating:</string>
     <string name="top_rated">Top Rated</string>
     <string name="popular">Popular</string>
+    <string name="favorites">Favorites</string>
     <string name="offline_toast">Offline, Check your internet connection!</string>
+    <string name="favorite_add_success">%s was added to your favorites!</string>
+    <string name="favorite_remove_success">%s was removed from your favorites!</string>
 </resources>

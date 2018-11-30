@@ -8,11 +8,8 @@ import com.google.gson.annotations.SerializedName;
 public class Movie implements Parcelable {
 
     private Long id;
-    @SerializedName("vote_count")
-    private Long voteCount;
     @SerializedName("vote_average")
     private Double voteAverage;
-    private Double popularity;
     private String title;
     @SerializedName("poster_path")
     private String posterPath;
@@ -22,13 +19,11 @@ public class Movie implements Parcelable {
     private String releaseDate;
     private String overview;
 
-
+    public Movie() {}
 
     protected Movie(Parcel in) {
         this.id = in.readLong();
-        this.voteCount = in.readLong();
         this.voteAverage = in.readDouble();
-        this.popularity = in.readDouble();
         this.title = in.readString();
         this.posterPath = in.readString();
         this.backdropPath = in.readString();
@@ -56,9 +51,7 @@ public class Movie implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeLong(id);
-        parcel.writeLong(voteCount);
         parcel.writeDouble(voteAverage);
-        parcel.writeDouble(popularity);
         parcel.writeString(title);
         parcel.writeString(posterPath);
         parcel.writeString(backdropPath);
@@ -74,28 +67,12 @@ public class Movie implements Parcelable {
         this.id = id;
     }
 
-    public Long getVoteCount() {
-        return voteCount;
-    }
-
-    public void setVoteCount(Long voteCount) {
-        this.voteCount = voteCount;
-    }
-
     public Double getVoteAverage() {
         return voteAverage;
     }
 
     public void setVoteAverage(Double voteAverage) {
         this.voteAverage = voteAverage;
-    }
-
-    public Double getPopularity() {
-        return popularity;
-    }
-
-    public void setPopularity(Double popularity) {
-        this.popularity = popularity;
     }
 
     public String getTitle() {

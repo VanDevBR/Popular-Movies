@@ -26,6 +26,12 @@
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
+
+
+        <provider
+            android:authorities="br.com.vanilson.popularmovies"
+            android:name=".data.MovieProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>

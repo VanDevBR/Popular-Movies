@@ -41,64 +41,89 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_movie_title">
 
-        <LinearLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/textViewRatting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/ratingLabel"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tv_movie_rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="" />
+                android:layout_marginTop="8dp"
+                android:text=""
+                app:layout_constraintStart_toStartOf="@+id/textViewRatting"
+                app:layout_constraintTop_toBottomOf="@+id/textViewRatting"
+                tools:text="10.0" />
 
             <TextView
                 android:id="@+id/textViewDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/release_date_date_label"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                app:layout_constraintStart_toStartOf="@+id/tv_movie_rating"
+                app:layout_constraintTop_toBottomOf="@+id/tv_movie_rating" />
 
             <TextView
                 android:id="@+id/tv_movie_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="" />
+                android:layout_marginTop="8dp"
+                android:text=""
+                app:layout_constraintStart_toStartOf="@+id/textViewDate"
+                app:layout_constraintTop_toBottomOf="@+id/textViewDate"
+                tools:text="20-12-2020" />
 
             <TextView
                 android:id="@+id/textViewSynopsis"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/synopsisLabel"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                app:layout_constraintStart_toStartOf="@+id/tv_movie_date"
+                app:layout_constraintTop_toBottomOf="@+id/tv_movie_date" />
 
             <TextView
                 android:id="@+id/tv_movie_synopsis"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:text=""
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/textViewSynopsis"
+                app:layout_constraintTop_toBottomOf="@+id/textViewSynopsis"
+                tools:text=" djkahdsadkja haslkdja;lsdk;asjdl bjksafhasjl lhafhsfhalfhsahdjhajkdajkgfahsdlkajsdlkk \n gdsgadgsaiduagdiyusagdiu" />
+
+            <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:text="" />
+                android:id="@+id/cb_favorite"
+                android:button="@drawable/bt_favorite_selector"
+                android:padding="5dp"
+                android:text="Favorite"
+                android:textSize="14sp"
+                android:onClick="toggleFavorite"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
 
-        </LinearLayout>
+        </android.support.constraint.ConstraintLayout>
 
     </ScrollView>
 
