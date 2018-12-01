@@ -1,14 +1,11 @@
 package br.com.vanilson.popularmovies;
 
-import android.content.Context;
 import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -19,7 +16,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.stetho.Stetho;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -54,8 +50,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Stetho.initializeWithDefaults(this);
-
         setContentView(R.layout.activity_main);
 
         mRecyclerView = findViewById(R.id.movies_recyclerview);
@@ -70,7 +64,12 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mMoviesAdapter);
 
         if (savedInstanceState != null) {
-            mMoviesAdapter.setMovies(savedInstanceState.<Movie>getParcelableArrayList("movies"));
+            List<Movie> movies = new ArrayList<>();
+            Parcelable[] moviesParcelable = savedInstanceState.getParcelableArray("movies");
+            for(Parcelable parcel : moviesParcelable) {
+                movies.add((Movie) parcel);
+            }
+            mMoviesAdapter.setMovies(movies);
         } else {
             loadMovies(POPULAR_SORTING);
         }
@@ -78,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadMovies(String sortMode) {
-        if (isNetworkAvailable()) {
+        if (NetworkUtils.isNetworkAvailable(this)) {
             new MoviesNetworkTask().execute(sortMode);
         } else {
             Toast.makeText(this, R.string.offline_toast, Toast.LENGTH_SHORT).show();
@@ -93,13 +92,6 @@ public class MainActivity extends AppCompatActivity {
     private void showDataView() {
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
         mRecyclerView.setVisibility(View.VISIBLE);
-    }
-
-    private Boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
 
     @Override
