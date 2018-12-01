@@ -12,6 +12,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible">
 
         <ScrollView
@@ -125,19 +129,45 @@
                     android:button="@drawable/bt_favorite_selector"
                     android:onClick="toggleFavorite"
                     android:padding="5dp"
-                    android:text="Favorite"
+                    android:text="@string/favorites"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="@+id/textViewRatting"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/textViewRatting" />
 
+                <View
+                    android:id="@+id/view"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@android:color/darker_gray"
+                    app:layout_constraintEnd_toEndOf="@+id/tv_movie_synopsis"
+                    app:layout_constraintStart_toStartOf="@+id/tv_movie_synopsis"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_movie_synopsis" />
+
+
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rvTrailers"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_movie_synopsis"
-                    tools:layout_editor_absoluteX="167dp" />
+                    app:layout_constraintEnd_toEndOf="@+id/tv_movie_synopsis"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="@+id/tv_movie_synopsis"
+                    app:layout_constraintTop_toBottomOf="@+id/view" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rvReviews"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:paddingBottom="8dp"
+                    app:layout_constraintEnd_toEndOf="@+id/rvTrailers"
+                    app:layout_constraintStart_toStartOf="@+id/rvTrailers"
+                    app:layout_constraintTop_toBottomOf="@+id/rvTrailers" />
 
 
             </android.support.constraint.ConstraintLayout>

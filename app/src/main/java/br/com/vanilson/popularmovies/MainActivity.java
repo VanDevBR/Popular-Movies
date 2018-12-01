@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ProgressBar mLoadingIndicator;
 
+    private boolean showingFavorites = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,24 +108,35 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.miTopRated) {
+            showingFavorites = false;
             mMoviesAdapter.setMovies(null);
             loadMovies(TOPRATED_SORTING);
             return true;
         }
 
         if (id == R.id.miPopular) {
+            showingFavorites = false;
             mMoviesAdapter.setMovies(null);
             loadMovies(POPULAR_SORTING);
             return true;
         }
 
         if (id == R.id.miFavorites) {
+            showingFavorites = true;
             mMoviesAdapter.setMovies(null);
             new FavoriteMoviesTask().execute();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(showingFavorites){
+            new FavoriteMoviesTask().execute();
+        }
     }
 
     @Override
